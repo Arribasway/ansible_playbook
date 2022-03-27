@@ -1,0 +1,22 @@
+---
+- name: installing apache
+  hosts: clients
+  tasks:
+  - name: installing apache with yum
+    yum: 
+      name: httpd
+      state: latest
+  - name: enable apache
+    ansible.builtin.systemd: 
+      name: httpd
+      enabled: yes
+      state: started
+  - name: actcept port
+    ansible.posix.firewalld:
+      port: 80/tcp
+      permanent: yes
+      state: enabled
+  - name: copy index.html
+    ansible.builtin.copy:
+      src: /root/index.html
+      dest: /var/www/html/
